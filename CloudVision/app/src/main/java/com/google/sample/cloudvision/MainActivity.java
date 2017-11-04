@@ -214,7 +214,7 @@ public class MainActivity extends AppCompatActivity {
                         annotateImageRequest.setFeatures(new ArrayList<Feature>() {{
                             Feature labelDetection = new Feature();
                             labelDetection.setType("LOGO_DETECTION");
-                            labelDetection.setMaxResults(10);
+                            labelDetection.setMaxResults(1);
                             add(labelDetection);
                         }});
 
