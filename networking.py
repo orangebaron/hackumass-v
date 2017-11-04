@@ -5,7 +5,6 @@ s.listen(1000)
 while True:
   try:
     client, _ = s.accept()
-    client.recv(4) #they send size but we don't need that ahyuk
     img = open('img.jpg', 'wb')
     try:
       while True:
