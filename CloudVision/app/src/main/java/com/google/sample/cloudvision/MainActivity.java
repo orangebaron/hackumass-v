@@ -66,8 +66,6 @@ public class MainActivity extends AppCompatActivity {
     private static final String ANDROID_PACKAGE_HEADER = "X-Android-Package";
 
     private static final String TAG = MainActivity.class.getSimpleName();
-    private static final int GALLERY_PERMISSIONS_REQUEST = 0;
-    private static final int GALLERY_IMAGE_REQUEST = 1;
     public static final int CAMERA_PERMISSIONS_REQUEST = 2;
     public static final int CAMERA_IMAGE_REQUEST = 3;
 
@@ -87,13 +85,6 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
                 builder
-                        .setMessage(R.string.dialog_select_prompt)
-                        .setPositiveButton(R.string.dialog_select_gallery, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                startGalleryChooser();
-                            }
-                        })
                         .setNegativeButton(R.string.dialog_select_camera, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
@@ -108,15 +99,6 @@ public class MainActivity extends AppCompatActivity {
         mMainImage = (ImageView) findViewById(R.id.main_image);
     }
 
-    public void startGalleryChooser() {
-        if (PermissionUtils.requestPermission(this, CAMERA_PERMISSIONS_REQUEST, Manifest.permission.READ_EXTERNAL_STORAGE)) {
-
-            Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-                startActivityForResult(takePictureIntent, CAMERA_IMAGE_REQUEST);
-            }
-        }
-    }
 
     public void startCamera() {
         if (PermissionUtils.requestPermission(
@@ -141,9 +123,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == GALLERY_IMAGE_REQUEST && resultCode == RESULT_OK && data != null) {
-            uploadImage(data.getData());
-        } else if (requestCode == CAMERA_IMAGE_REQUEST && resultCode == RESULT_OK) {
+        if (requestCode == CAMERA_IMAGE_REQUEST && resultCode == RESULT_OK) {
             Uri photoUri = FileProvider.getUriForFile(this, getApplicationContext().getPackageName() + ".provider", getCameraFile());
             uploadImage(photoUri);
         }
@@ -157,11 +137,6 @@ public class MainActivity extends AppCompatActivity {
             case CAMERA_PERMISSIONS_REQUEST:
                 if (PermissionUtils.permissionGranted(requestCode, CAMERA_PERMISSIONS_REQUEST, grantResults)) {
                     startCamera();
-                }
-                break;
-            case GALLERY_PERMISSIONS_REQUEST:
-                if (PermissionUtils.permissionGranted(requestCode, GALLERY_PERMISSIONS_REQUEST, grantResults)) {
-                    startGalleryChooser();
                 }
                 break;
         }
