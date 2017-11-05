@@ -267,16 +267,18 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private String convertResponseToString(BatchAnnotateImagesResponse response) {
-        String message = "I found these things:\n\n";
+        String message = "";
 
         List<EntityAnnotation> labels = response.getResponses().get(0).getLogoAnnotations();
         if (labels != null) {
             for (EntityAnnotation label : labels) {
-                message += String.format(Locale.US, "%.3f: %s", label.getScore(), label.getDescription());
-                message += "\n";
+                message += label.getDescription();
+                Uri uriUrl = Uri.parse("https://www.google.com/search?q="+message);
+                Intent launchBrowser = new Intent(Intent.ACTION_VIEW, uriUrl);
+                startActivity(launchBrowser);
             }
         } else {
-            message += "nothing";
+            message += "Image not found, retry";
         }
 
         return message;
